@@ -1,72 +1,27 @@
 const express = require('express')
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
+const authenticateJWT = require('./src/auth')
+const usersRouter = require('./src/routes/R-users')
+const signinRouter = require('./src/routes/R-signin')
+const signupRouter = require('./src/routes/R-signup')
 
-const { movies, users } = require('./mockData')
+
 const app = express()
 const PORT = process.env.PORT || 5555
 
 app.use(express.json())
+app.use('/', usersRouter)
+app.use('/', signinRouter)
+app.use('/', signupRouter)
 
-function authenticateJWT(req, res, next) {
-  const authHeader = req.headers.authorization
-  if(authHeader) {
-    const token = authHeader.split(' ')[1]
 
-    jwt.verify(token, 'tacosaregood', (err, user) => {
-      if(err) {
-        res.sendStatus(403)
-      }
-      req.user = user
-      next()
-    })
-  } else {
-    req.sendStatus(403)
-  }
-  
-}
 
-app.get('/movies', authenticateJWT, (req, res) => {
-  // console.log(req)
-  res.json(movies)
-})
 
-app.get('/movies/:id', (req, res) => {
-  const { id } = req.params
-  const foundMovie = movies.find((movie) => movie.id === +id)
-  res.json(foundMovie)
-})
-
-app.get('/users', (req, res) => {
-  res.json(users)
-})
-
-app.post('/signin', async (req, res) => {
-  const { email, password } = req.body
-  const foundUser = users.find((user) => user.email === email)
-  const hashedPassword = await bcrypt.compare(password, foundUser.password)
-
-  if(hashedPassword){
-    const token = jwt.sign(foundUser, 'tacosaregood')
-    res.json({
-      token,
-    })
-  } else {
-    res.json({
-      message: 'Email or Password is incorrect'
-    })
-  }
-})
-
-app.post('/signup', async (req, res) => {
-  const { email, password } = req.body
-  const hashedPassword = await bcrypt.hash(password, 8)
-  users.push({
-    email,
-    password: hashedPassword
+app.get('/', (req, res) => {
+  res.json({
+    message: "Welcome to my API!"
   })
-  res.json(users.at(-1))
 })
+
 
 
 app.listen(PORT, console.log('connected to the port'))
