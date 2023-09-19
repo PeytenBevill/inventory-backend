@@ -6,8 +6,9 @@ require('dotenv').config()
 
 const signin = (req, res) => {
   const { email, password } = req.body
-
+  console.log(email, password)
   pool.query('SELECT * FROM users WHERE email = ?', [email], async (err, user, fields) => {
+   console.log(user)
     const hashedPassword = await bcrypt.compare(password, user[0].password)
     
     if(hashedPassword){

@@ -6,7 +6,7 @@ function authenticateJWT(req, res, next) {
   if(authHeader) {
     const token = authHeader.split(' ')[1]
 
-jwt.verify(token, process.env.DB_JWT_SECRET=tacosaregood, (err, user) => {
+jwt.verify(token, process.env.DB_JWT_SECRET, (err, user) => {
       if(err) {
         res.sendStatus(403)
       }
@@ -14,7 +14,7 @@ jwt.verify(token, process.env.DB_JWT_SECRET=tacosaregood, (err, user) => {
       next()
     })
   } else {
-    req.sendStatus(403)
+    // req.sendStatus(403)
   }
   
 }

@@ -7,3 +7,11 @@ CREATE TABLE users (
   first_name VARCHAR(255)
 );
 
+
+CREATE TABLE pets (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  pet1 VARCHAR(255),
+  pet2 VARCHAR(255),
+  pet3 VARCHAR(255),
+);
+
