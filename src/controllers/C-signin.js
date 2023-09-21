@@ -12,9 +12,10 @@ const signin = (req, res) => {
     const hashedPassword = await bcrypt.compare(password, user[0].password)
     
     if(hashedPassword){
-    const token = jwt.sign(user[0], process.env.DB_JWT_SECRET)
+    const token = jwt.sign({ user_id: user[0].id }, process.env.DB_JWT_SECRET)
     res.json({
       token,
+      user_id: user[0].id
     })
   } else {
     res.json({

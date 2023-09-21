@@ -1,7 +1,8 @@
 const pool = require('../sql/connection')
 
 const list = (req, res) => {
-  pool.query('SELECT * FROM pets WHERE user_id = ?',[user_id], (err, rows, fields) => {
+  const {user_id} = req.params
+  pool.query('SELECT post_title, post_body FROM posts WHERE user_id = ?',[user_id], (err, rows, fields) => {
     if(err){
       return res.status(500).json({message: err.message})
     } 
@@ -19,29 +20,50 @@ const list = (req, res) => {
 //   })
 // }
 //create
+
+// const addPet = (req, res) => {
+//   const {petName1, petName2, petName3} = req.body
+//    pool.query('INSERT INTO pets (pet1, pet2, pet3) VALUES (?, ?, ?)', [
+//     petName1,
+//     petName2,
+//     petName3,
+//   ], (err, row, fields) => {
+//     if(err){
+//       return res.status(500).json({ message: err.message });
+//     }
+//     res.json({ message: 'Pet names added successfully' });
+
+//   });
+
+// };
+
+
+
 const create = (req, res) => {
-  const {body} = req
-  const {user_id, post_category, post_instructions} = body
+  const { user_id } = req.params;
+  const { post_title, post_body } = req.body;
   pool.query(
-    'INSERT INTO pets (user_id, post_category, post_instructions) VALUES (?, ?, ?)',
-    [user_id, post_category, post_instructions], (err, row, fields) => {
+    'INSERT INTO posts (post_title, post_body, user_id) VALUES (?, ?, ?);',
+    [post_title, post_body, user_id],
+    (err, result) => {
       if (err) {
         return res.status(500).json({ message: err.message });
       }
-      const newPostId = result.insertId;
-      res.json({ message: 'Post created successfully', postId: newPostId });
-    })
-  }
+      res.json({ message: 'Post created successfully' });
+    }
+  );
+};
+
 
 
 //update
 const update = (req, res) => {
-  const postId = req.params.id;
+  const id = req.params.id;
   const updatedData = req.body;
 
   pool.query(
-    'UPDATE pets SET ? WHERE id = ?',
-    [updatedData, postId],
+    'UPDATE posts SET ? WHERE id = ?',
+    [updatedData, id],
     (err, result) => {
       if (err) {
         return res.status(500).json({ message: err.message });
@@ -58,9 +80,9 @@ const update = (req, res) => {
 
 //delete
 const deletePost = (req, res) => {
-  const postId = req.params.id;
+  const id = req.params.id;
   
-  pool.query('DELETE FROM pets WHERE id = ?', [postId], (err, result) => {
+  pool.query('DELETE FROM posts WHERE id = ?', [id], (err, result) => {
     if (err) {
       return res.status(500).json({ message: err.message });
     }
@@ -73,28 +95,11 @@ const deletePost = (req, res) => {
   });
 };
 
-const deletePet = (req, res) => {
-  const petId = req.params.id;
-  
-  pool.query('DELETE FROM pets WHERE id = ?', [petId], (err, result) => {
-    if (err) {
-      return res.status(500).json({ message: err.message });
-    }
-    
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: 'Pet not found' });
-    }
-
-    res.json({ message: 'Pet deleted successfully' });
-  });
-};
-
 
 
 module.exports = {
   list,
   create,
   update,
-  deletePet,
   deletePost
 }
