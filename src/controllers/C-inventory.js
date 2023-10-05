@@ -12,11 +12,26 @@ const getInventory = (req, res) => {
   });
 };
 
-const getItem = (req, res) => {
+const getItemById = (req, res) => {
   const { id } = req.params;
   pool.query(
     "SELECT * FROM inventory WHERE id = ?",
     [id],
+    (err, rows, fields) => {
+      if (rows.length === 0) {
+        res.status(404).json({ error: "Item not found" });
+      } else {
+        res.status(200).json(rows);
+      }
+    }
+  );
+};
+
+const getItemByProduct = (req, res) => {
+  const { product } = req.params;
+  pool.query(
+    "SELECT * FROM inventory WHERE id = ?",
+    [product],
     (err, rows, fields) => {
       if (rows.length === 0) {
         res.status(404).json({ error: "Item not found" });
@@ -103,7 +118,8 @@ const deleteItem = (req, res) => {
 
 module.exports = {
   getInventory,
-  getItem,
+  getItemById,
+  getItemByProduct,
   addInventory,
   updateStock,
   updatePrice,
