@@ -30,7 +30,7 @@ const getItemById = (req, res) => {
 const getItemByProduct = (req, res) => {
   const { product } = req.params;
   pool.query(
-    "SELECT * FROM inventory WHERE id = ?",
+    "SELECT * FROM inventory WHERE product = ?",
     [product],
     (err, rows, fields) => {
       if (rows.length === 0) {
