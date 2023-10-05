@@ -1,21 +1,23 @@
 const express = require('express')
 const authenticateJWT = require('./src/auth')
-const usersRouter = require('./src/routes/R-users')
-const signinRouter = require('./src/routes/R-signin')
-const signupRouter = require('./src/routes/R-signup')
-const postsRouter = require('./src/routes/R-posts')
+// const usersRouter = require('./src/routes/R-users')
+// const signinRouter = require('./src/routes/R-signin')
+// const signupRouter = require('./src/routes/R-signup')
+// const postsRouter = require('./src/routes/R-posts')
+const computerRouter = require('./src/routes/R-computers')
+const inventoryRouter = require('./src/routes/R-inventory')
 const cors = require('cors')
 
 
 const app = express()
-const PORT = process.env.PORT || 5555
+const PORT = process.env.PORT || 8080
 
 app.use(express.json())
 app.use(cors())
 app.use(function (req, res, next) {
   // Website you wish to allow to connect
   // !!THiS IS FOR DEV - We replace this once we have our production URL in place.
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5174");
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
 
   // res.setHeader(
   //   "Access-Control-Allow-Origin",
@@ -40,10 +42,12 @@ app.use(function (req, res, next) {
 });
 
 
-app.use('/', usersRouter)
-app.use('/', signinRouter)
-app.use('/', signupRouter)
-app.use('/', postsRouter)
+// app.use('/', usersRouter)
+// app.use('/', signinRouter)
+// app.use('/', signupRouter)
+// app.use('/', postsRouter)
+app.use('/', computerRouter)
+app.use('/', inventoryRouter)
 
 
 
@@ -56,4 +60,4 @@ app.get('/', (req, res) => {
 
 
 
-app.listen(PORT, console.log('connected to the port'))
+app.listen(PORT, console.log(`connected to port ${PORT}`))
