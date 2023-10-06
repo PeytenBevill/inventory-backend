@@ -27,12 +27,33 @@ const getItemById = (req, res) => {
   );
 };
 
+// const getItemByProduct = (req, res) => {
+//   const { product } = req.params;
+//   pool.query(
+//     "SELECT * FROM inventory WHERE product = ?",
+//     [product],
+//     (err, rows, fields) => {
+//       if (rows.length === 0) {
+//         res.status(404).json({ error: "Item not found" });
+//       } else {
+//         res.status(200).json(rows);
+//       }
+//     }
+//   );
+// };
+
 const getItemByProduct = (req, res) => {
   const { product } = req.params;
+
   pool.query(
-    "SELECT * FROM inventory WHERE product = ?",
-    [product],
+    "SELECT * FROM inventory WHERE product LIKE ?",
+    [`${product}%`],
     (err, rows, fields) => {
+      if (err) {
+        console.error('Error searching for inventory:', err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
       if (rows.length === 0) {
         res.status(404).json({ error: "Item not found" });
       } else {
@@ -41,6 +62,7 @@ const getItemByProduct = (req, res) => {
     }
   );
 };
+
 
 const addInventory = (req, res) => {
   const { product, company, unit_cost, total_stock } = req.body;
