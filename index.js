@@ -1,6 +1,5 @@
 const express = require('express')
 const authenticateJWT = require('./auth')
-import serverless from 'serverless-http';
 // const usersRouter = require('./src/routes/R-users')
 // const signinRouter = require('./src/routes/R-signin')
 // const signupRouter = require('./src/routes/R-signup')
@@ -62,5 +61,3 @@ app.get('/', (req, res) => {
 
 
 app.listen(PORT, console.log(`connected to port ${PORT}`))
-
-export const handler = serverless(app);
